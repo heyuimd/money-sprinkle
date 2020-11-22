@@ -24,6 +24,6 @@ public class MoneySprinkle extends BaseDateTime {
     @JoinColumn(name = "ROOM_ID")
     private Room room;
 
-    @OneToMany(mappedBy = "moneySprinkle", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sprinkle", fetch = FetchType.LAZY)
     private List<SprinkledMoney> sprinkledMonies = new ArrayList<>();
 }
