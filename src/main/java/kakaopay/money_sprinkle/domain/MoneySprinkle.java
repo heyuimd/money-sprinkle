@@ -14,6 +14,7 @@ public class MoneySprinkle extends BaseDateTime {
     @GeneratedValue
     private Long id;
 
+    @Column(unique = true)
     private String token;
 
     @ManyToOne(fetch = FetchType.LAZY)
