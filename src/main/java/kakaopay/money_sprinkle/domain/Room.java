@@ -26,8 +26,8 @@ public class Room extends BaseDateTime {
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-    private List<UserRoom> userRooms = new ArrayList<>();
+    @OneToMany(mappedBy = "room")
+    private List<RoomInOut> roomInOutList = new ArrayList<>();
 
     /**
      * 방 생성
@@ -41,11 +41,6 @@ public class Room extends BaseDateTime {
         room.createdBy = createdBy;
         room.name = roomName;
         room.status = RoomStatus.OPEN;
-
-        // 방을 생성한 사용자를 방에 입장시킨다.
-        UserRoom userRoom = UserRoom.enterRoom(createdBy, room);
-        room.userRooms.add(userRoom);
-        createdBy.getUserRooms().add(userRoom);
 
         return room;
     }

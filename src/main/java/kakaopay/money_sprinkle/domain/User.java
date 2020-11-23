@@ -24,7 +24,7 @@ public class User extends BaseDateTime {
     private Long money;
 
     @OneToMany(mappedBy = "user")
-    private List<UserRoom> userRooms = new ArrayList<>();
+    private List<RoomInOut> roomInOutList = new ArrayList<>();
 
     /**
      * 사용자 생성

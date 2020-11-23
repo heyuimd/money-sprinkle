@@ -37,11 +37,5 @@ class RoomTest {
         assertThat(roomFound).isEqualTo(room);
         assertThat(roomFound.getCreatedBy()).isEqualTo(user);
         assertThat(roomFound.getName()).isEqualTo(roomName);
-        assertThat(roomFound.getUserRooms().get(0))
-                .isEqualTo(user.getUserRooms().get(0));
-        assertThat(roomFound.getUserRooms().get(0).getUser())
-                .isEqualTo(user);
-        assertThat(roomFound.getUserRooms().get(0).getStatus())
-                .isEqualTo(UserRoomStatus.ENTERED);
     }
 }
