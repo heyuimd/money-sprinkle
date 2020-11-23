@@ -19,15 +19,28 @@ public class User extends BaseDateTime {
 
     private String loginId;
 
+    private String name;
+
     private Long money;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserRoom> userRooms = new ArrayList<>();
 
-    public User(String loginId) {
-        this.loginId = loginId;
+    /**
+     * 사용자 생성
+     *
+     * @param loginId 사용자 로그인 아이디
+     * @param userName 사용자 이름
+     * @return 생성된 사용자
+     */
+    public static User createUser(String loginId, String userName) {
+        User user = new User();
+        user.loginId = loginId;
+        user.name = userName;
 
         // 모든 사용자는 뿌리기에 충분한 잔액을 보유하고 있다고 가정한다.
-        this.money = 999999999999999L;
+        user.money = 999999999999999L;
+
+        return user;
     }
 }
