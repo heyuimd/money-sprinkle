@@ -23,13 +23,13 @@ public class User extends BaseDateTime {
 
     private Long money;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<UserRoom> userRooms = new ArrayList<>();
 
     /**
      * 사용자 생성
      *
-     * @param loginId 사용자 로그인 아이디
+     * @param loginId  사용자 로그인 아이디
      * @param userName 사용자 이름
      * @return 생성된 사용자
      */

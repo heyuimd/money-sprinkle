@@ -1,6 +1,8 @@
 package kakaopay.money_sprinkle.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,15 +10,43 @@ import java.util.List;
 
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Room extends BaseDateTime {
 
     @Id
     @GeneratedValue
     private Long id;
 
+    private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CREATED_BY")
+    private User createdBy;
+
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
 
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<UserRoom> userRooms = new ArrayList<>();
+
+    /**
+     * 방 생성
+     *
+     * @param createdBy 방을 생성한 사용자
+     * @param roomName  방 이름
+     * @return 생성된 방
+     */
+    public static Room createRoom(User createdBy, String roomName) {
+        Room room = new Room();
+        room.createdBy = createdBy;
+        room.name = roomName;
+        room.status = RoomStatus.OPEN;
+
+        // 방을 생성한 사용자를 방에 입장시킨다.
+        UserRoom userRoom = UserRoom.enterRoom(createdBy, room);
+        room.userRooms.add(userRoom);
+        createdBy.getUserRooms().add(userRoom);
+
+        return room;
+    }
 }
