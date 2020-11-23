@@ -1,72 +1,94 @@
 package kakaopay.money_sprinkle.web;
 
+import kakaopay.money_sprinkle.domain.MoneySprinkle;
+import kakaopay.money_sprinkle.dto.BadRequestDto;
+import kakaopay.money_sprinkle.service.MoneySprinkleService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 public class MoneySprinkleApiController {
 
+    private final MoneySprinkleService moneySprinkleService;
+
     @PostMapping("/api/money-sprinkle")
-    public MoneySprinkleResponseDto createMoneySprinkle(
+    public ResponseEntity<?> createMoneySprinkle(
             @RequestHeader("X-USER-ID") Long userId,
             @RequestHeader("X-ROOM-ID") Long roomId,
             @RequestBody MoneySprinkleRequestDto request
     ) {
-        return new MoneySprinkleResponseDto("123");
+        try {
+            String token = moneySprinkleService.sprinkleMoney(
+                    userId, roomId, request.getMoney(), request.getCount());
+            return ResponseEntity.ok(new MoneySprinkleResponseDto(token));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new BadRequestDto(e.getMessage()));
+        }
     }
 
     @PostMapping("/api/money-sprinkle/{token}/pick-up")
-    public PickUpResponseDto pickUpMoney(
+    public ResponseEntity<?> pickUpMoney(
             @RequestHeader("X-USER-ID") Long userId,
             @RequestHeader("X-ROOM-ID") Long roomId,
             @PathVariable("token") String token
     ) {
-        return new PickUpResponseDto(0);
+        try {
+            moneySprinkleService.pickUpMoney(token, userId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new BadRequestDto(e.getMessage()));
+        }
     }
 
     @GetMapping("/api/money-sprinkle/{token}")
-    public GetMoneySprinkleResponseDto getMoneySprinkle(
+    public ResponseEntity<?> getMoneySprinkle(
             @RequestHeader("X-USER-ID") Long userId,
             @RequestHeader("X-ROOM-ID") Long roomId,
             @PathVariable("token") String token
     ) {
-        return new GetMoneySprinkleResponseDto(0, 0, LocalDateTime.now(), null);
+        try {
+            MoneySprinkle moneySprinkle = moneySprinkleService.findByTokenAndUserId(token, userId);
+            List<SprinkledMoneyDto> sprinkledMoneyDtoList = moneySprinkle.getSprinkledMoneyList().stream()
+                    .map(o -> new SprinkledMoneyDto(o.getPickedUpBy().getId(), o.getMoney()))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(new GetMoneySprinkleResponseDto(
+                    moneySprinkle.getMoney(), moneySprinkle.getPickUpMoney(),
+                    moneySprinkle.getCreatedAt(), sprinkledMoneyDtoList));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new BadRequestDto(e.getMessage()));
+        }
     }
 
     @Data
-    private class MoneySprinkleRequestDto {
+    static class MoneySprinkleRequestDto {
         private Integer money;
         private Integer count;
     }
 
     @Data
     @AllArgsConstructor
-    private class MoneySprinkleResponseDto {
+    public static class MoneySprinkleResponseDto {
         private String token;
     }
 
     @Data
     @AllArgsConstructor
-    private class PickUpResponseDto {
+    public static class SprinkledMoneyDto {
+        private Long pickedBy;
         private Integer money;
     }
 
     @Data
     @AllArgsConstructor
-    private class SprinkledMoneyDto {
-        private Integer pickedBy;
-        private Integer money;
-    }
-
-    @Data
-    @AllArgsConstructor
-    private class GetMoneySprinkleResponseDto {
+    public static class GetMoneySprinkleResponseDto {
         private Integer totalMoney;
         private Integer pickedUpMoney;
         private LocalDateTime sprinkledAt;

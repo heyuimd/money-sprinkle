@@ -24,7 +24,7 @@ public class MoneySprinkleService {
     private final MoneySprinkleRepository moneySprinkleRepository;
 
     @Transactional
-    public String moneySprinkle(Long userId, Long roomId, int money, int count) {
+    public String sprinkleMoney(Long userId, Long roomId, int money, int count) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new MyEntityNotFoundException("사용자를 찾을 수 없습니다."));
 
@@ -48,7 +48,7 @@ public class MoneySprinkleService {
         moneySprinkle.pickUpMoney(user);
     }
 
-    public MoneySprinkle findByToken(String token, Long userId) {
+    public MoneySprinkle findByTokenAndUserId(String token, Long userId) {
         MoneySprinkle moneySprinkle = moneySprinkleRepository.findByTokenAndUserId(token, userId).orElseThrow(
                 () -> new MyEntityNotFoundException("요청한 뿌리기 정보를 찾을 수 없습니다."));
 

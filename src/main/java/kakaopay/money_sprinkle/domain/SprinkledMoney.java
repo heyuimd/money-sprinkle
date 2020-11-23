@@ -41,5 +41,6 @@ public class SprinkledMoney extends BaseDateTime {
 
         this.pickedUpBy = pickedUpBy;
         pickedUpAt = LocalDateTime.now();
+        pickedUpBy.addMoney(money);
     }
 }

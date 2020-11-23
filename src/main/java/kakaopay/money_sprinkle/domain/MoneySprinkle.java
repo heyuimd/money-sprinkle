@@ -36,6 +36,8 @@ public class MoneySprinkle extends BaseDateTime {
 
     private Integer money;
 
+    private Integer pickUpMoney;
+
     private Integer count;
 
     @OneToMany(mappedBy = "sprinkle", cascade = CascadeType.ALL)
@@ -91,6 +93,7 @@ public class MoneySprinkle extends BaseDateTime {
         moneySprinkle.user = user;
         moneySprinkle.room = room;
         moneySprinkle.money = money;
+        moneySprinkle.pickUpMoney = 0;
         moneySprinkle.count = count;
 
         for (Integer split : splits) {
@@ -128,6 +131,7 @@ public class MoneySprinkle extends BaseDateTime {
                 .orElseThrow(() -> new NoMoreSplitsException("받아 갈 수 있는 돈이 없습니다."));
 
         sprinkledMoney.pickUp(user);
+        pickUpMoney += sprinkledMoney.getMoney();
 
         return sprinkledMoney;
     }
