@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class User extends BaseDateTime {
 
     @Id

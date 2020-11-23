@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Getter
-@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "ROOM_ID"}))
 public class RoomInOut extends BaseDateTime {
 
     @Id
