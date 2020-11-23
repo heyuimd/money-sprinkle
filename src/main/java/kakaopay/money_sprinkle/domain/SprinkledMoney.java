@@ -1,5 +1,6 @@
 package kakaopay.money_sprinkle.domain;
 
+import kakaopay.money_sprinkle.exception.AlreadyPickedUpException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,5 +32,14 @@ public class SprinkledMoney extends BaseDateTime {
     public SprinkledMoney(Integer money, MoneySprinkle sprinkle) {
         this.money = money;
         this.sprinkle = sprinkle;
+    }
+
+    public void pickUp(User pickedUpBy) {
+        if (this.pickedUpBy != null) {
+            throw new AlreadyPickedUpException("이미 가져간 사용자가 있습니다.");
+        }
+
+        this.pickedUpBy = pickedUpBy;
+        pickedUpAt = LocalDateTime.now();
     }
 }

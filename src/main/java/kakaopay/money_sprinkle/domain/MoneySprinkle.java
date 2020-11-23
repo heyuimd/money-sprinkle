@@ -1,11 +1,15 @@
 package kakaopay.money_sprinkle.domain;
 
+import kakaopay.money_sprinkle.exception.NoMoreSplitsException;
 import kakaopay.money_sprinkle.exception.NotEnoughToSplitException;
+import kakaopay.money_sprinkle.exception.NotPickableUserException;
+import kakaopay.money_sprinkle.exception.TimePassedException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -59,9 +63,8 @@ public class MoneySprinkle extends BaseDateTime {
     }
 
     private static List<Integer> splitMoney(int money, int count) {
-        // 최소 두당 천원씩은 돌아가야 한다.
         if (money < count) {
-            throw new NotEnoughToSplitException();
+            throw new NotEnoughToSplitException("사용자가 최소 천원씩은 받아 갈 수 있어야 합니다.");
         }
 
         // 랜덤하게 분배
@@ -97,5 +100,35 @@ public class MoneySprinkle extends BaseDateTime {
         user.removeMoney(money);
 
         return moneySprinkle;
+    }
+
+    public SprinkledMoney pickUpMoney(User user) {
+        if (this.user == user) {
+            throw new NotPickableUserException("돈을 뿌린 사용자는 받아갈 수 없습니다.");
+        }
+
+        if (getCreatedAt().plusMinutes(10).isBefore(LocalDateTime.now())) {
+            throw new TimePassedException("돈 뿌린 후, 10분 후는 받아갈 수 없습니다.");
+        }
+
+        if (!user.isUserIn(room)) {
+            throw new NotPickableUserException("같은 방에 뿌려진 돈만 가져갈 수 있습니다.");
+        }
+
+        sprinkledMoneyList.stream()
+                .filter(o -> o.getPickedUpBy() == user)
+                .findFirst()
+                .ifPresent(o -> {
+                    throw new NotPickableUserException("이미 받아간 뿌리기 입니다.");
+                });
+
+        SprinkledMoney sprinkledMoney = sprinkledMoneyList.stream()
+                .filter(o -> o.getPickedUpBy() == null)
+                .findFirst()
+                .orElseThrow(() -> new NoMoreSplitsException("받아 갈 수 있는 돈이 없습니다."));
+
+        sprinkledMoney.pickUp(user);
+
+        return sprinkledMoney;
     }
 }

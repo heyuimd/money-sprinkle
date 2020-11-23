@@ -55,4 +55,9 @@ public class User extends BaseDateTime {
         // 충분한 잔액을 보유하고 있다고 가정하여 별도로 잔액에 관련된 체크는 하지 않는다.
         this.money -= money;
     }
+
+    public boolean isUserIn(Room room) {
+        return roomInOutList.stream()
+                .anyMatch(o -> o.getRoom() == room && o.getStatus() == RoomInOutStatus.IN);
+    }
 }
