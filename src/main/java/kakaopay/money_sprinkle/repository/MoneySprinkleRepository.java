@@ -11,4 +11,8 @@ public interface MoneySprinkleRepository extends JpaRepository<MoneySprinkle, Lo
 
     @Query("select ms from MoneySprinkle ms left join fetch ms.sprinkledMoneyList where ms.token = :token")
     Optional<MoneySprinkle> findByToken(@Param("token") String token);
+
+    @Query("select ms from MoneySprinkle ms left join fetch ms.sprinkledMoneyList " +
+            "where ms.token = :token and ms.user.id = :userId")
+    Optional<MoneySprinkle> findByTokenAndUserId(@Param("token") String token, @Param("userId") Long userId);
 }
