@@ -17,6 +17,7 @@ public class User extends BaseDateTime {
     @GeneratedValue
     private Long id;
 
+    @Column(unique = true)
     private String loginId;
 
     private String name;
@@ -39,8 +40,19 @@ public class User extends BaseDateTime {
         user.name = userName;
 
         // 모든 사용자는 뿌리기에 충분한 잔액을 보유하고 있다고 가정한다.
+        // 단위: 천원
         user.money = 999999999999999L;
 
         return user;
+    }
+
+    public void addMoney(int money) {
+        // 충분한 잔액을 보유하고 있다고 가정하여 별도로 잔액에 관련된 체크는 하지 않는다.
+        this.money += money;
+    }
+
+    public void removeMoney(int money) {
+        // 충분한 잔액을 보유하고 있다고 가정하여 별도로 잔액에 관련된 체크는 하지 않는다.
+        this.money -= money;
     }
 }

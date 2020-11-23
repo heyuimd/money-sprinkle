@@ -1,11 +1,14 @@
 package kakaopay.money_sprinkle.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class SprinkledMoney extends BaseDateTime {
 
@@ -13,7 +16,7 @@ public class SprinkledMoney extends BaseDateTime {
     @GeneratedValue
     private Long id;
 
-    private Long money;
+    private Integer money;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PICKED_UP_BY")
@@ -24,4 +27,9 @@ public class SprinkledMoney extends BaseDateTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SPRINKLE_ID")
     private MoneySprinkle sprinkle;
+
+    public SprinkledMoney(Integer money, MoneySprinkle sprinkle) {
+        this.money = money;
+        this.sprinkle = sprinkle;
+    }
 }

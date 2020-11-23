@@ -27,7 +27,7 @@ public class MoneySprinkleApiController {
             @RequestHeader("X-ROOM-ID") Long roomId,
             @PathVariable("token") String token
     ) {
-        return new PickUpResponseDto(0L);
+        return new PickUpResponseDto(0);
     }
 
     @GetMapping("/api/money-sprinkle/{token}")
@@ -36,13 +36,13 @@ public class MoneySprinkleApiController {
             @RequestHeader("X-ROOM-ID") Long roomId,
             @PathVariable("token") String token
     ) {
-        return new GetMoneySprinkleResponseDto(0L, 0L, LocalDateTime.now(), null);
+        return new GetMoneySprinkleResponseDto(0, 0, LocalDateTime.now(), null);
     }
 
     @Data
     private class MoneySprinkleRequestDto {
-        private Long money;
-        private Long count;
+        private Integer money;
+        private Integer count;
     }
 
     @Data
@@ -54,21 +54,21 @@ public class MoneySprinkleApiController {
     @Data
     @AllArgsConstructor
     private class PickUpResponseDto {
-        private Long money;
+        private Integer money;
     }
 
     @Data
     @AllArgsConstructor
     private class SprinkledMoneyDto {
-        private Long pickedBy;
-        private Long money;
+        private Integer pickedBy;
+        private Integer money;
     }
 
     @Data
     @AllArgsConstructor
     private class GetMoneySprinkleResponseDto {
-        private Long totalMoney;
-        private Long pickedUpMoney;
+        private Integer totalMoney;
+        private Integer pickedUpMoney;
         private LocalDateTime sprinkledAt;
         private List<SprinkledMoneyDto> detail;
     }
